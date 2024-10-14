@@ -14,7 +14,7 @@ TOKEN=$2 # provide your Public REST API token
 
 URL="https://api.zephyrscale.smartbear.com/v2/automations/executions/junit?projectKey=${PROJECT_KEY}&autoCreateTestCases=false"
 
-mvn test -DskinName="respin" -Dgroups=base,cards,loginHeader,chat,loginWithUnconfirmedEmail,affiliate,transactions,creditCard,bonus,demo,manualVerification,noSport,customer
+mvn test -DskinName="pwc" -Dgroups=base,cards,regWithPersonalInfo,noLoginWihtUnconfirmedEmail,affiliate,transactions,GTM,creditCard,bonus,demo,verification,noSport
 
 zip -D ./target/junit_tests.zip ./target/surefire-reports/TEST*.xml
 

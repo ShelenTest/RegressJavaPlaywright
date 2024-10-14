@@ -11,7 +11,7 @@ import org.pages.homePage.cardGallery.CardGalleryPublic;
 import org.pages.homePage.cardGallery.RegisterCard;
 import org.pages.modals.MoLogin;
 import org.pages.modals.MoRegistration;
-import org.utils.ConfigProperties;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,17 +29,17 @@ private Page page;
 
 
     @BeforeEach
-    public void init(){
-    page = getPage();}
+    public void init(){page = getPage();}
 
     @Test
     @DisplayName("Главная страница. Фильтры. Переход по прямой ссылке с фильтром для конкретной игры")
     @Tag("base")
     public void PWC_T185() {
         Page.NavigateOptions navigateOptions = new Page.NavigateOptions().setWaitUntil(WaitUntilState.COMMIT);
-        page.navigate(ConfigProperties.getProperty("urlForGame"),navigateOptions);
+        page.navigate(getUrlForGame(),navigateOptions);
+        page.waitForTimeout(3000);   //явное ожидание, не знаю, как обойти
 
-        assertEquals(gameGallery.getTextSearchInput(page),("\"" + gameGallery.getNameFirstGame(page) + "\""));
+        assertEquals(gameGallery.getTextInputSearch(page),("\"" + gameGallery.getNameFirstGame(page) + "\""));
     }
 
     @Test
@@ -51,23 +51,6 @@ private Page page;
 
         assertThat(moRegistration.findUserNameIcon(page)).isVisible();
         assertTrue(page.url().contains("registration"));
-    }
-
-    @Test
-    @DisplayName("Главная страница. Card gallery. Registration card. Переход на МО регистрации по кнопке Create account с заполненными полями")
-    @Tag("cards")
-    public void PWC_T22() {
-        cardGalleryPublic.scrollToRegisterCard(page);
-        registerCard.fillUserNameInput(page,"Test name");
-        registerCard.fillEmailInput(page,"Test email");
-        registerCard.fillPasswordInput(page,"Password");
-        registerCard.fillBonusCodeInput(page,"Test code");
-        registerCard.clickCreateAccount(page);
-
-        Assertions.assertEquals(moRegistration.getValueUserName(page),"Test name");
-        Assertions.assertEquals(moRegistration.getValueEmail(page),"Test email");
-        Assertions.assertEquals(moRegistration.getValuePassword(page),"Password") ;
-        Assertions.assertEquals(moRegistration.getValueBonusCode(page),"Test code");
     }
 
 
@@ -107,5 +90,23 @@ private Page page;
         assertThat(moLogin.getButtonLogin(page)).isVisible();
         assertTrue(page.url().contains("login"));
     }
+
+    @Test
+    @DisplayName("Главная страница. Card gallery. Registration card. Переход на МО регистрации по кнопке Create account с заполненными полями")
+    @Tag("cards")
+    public void PWC_T22() {
+        cardGalleryPublic.scrollToRegisterCard(page);
+        registerCard.fillUserNameInput(page,"Test name");
+        registerCard.fillEmailInput(page,"Test email");
+        registerCard.fillPasswordInput(page,"Password");
+        registerCard.fillBonusCodeInput(page,"Test code");
+        registerCard.clickCreateAccount(page);
+
+        Assertions.assertEquals(moRegistration.getValueUserName(page),"Test name");
+        Assertions.assertEquals(moRegistration.getValueEmail(page),"Test email");
+        Assertions.assertEquals(moRegistration.getValuePassword(page),"Password") ;
+        Assertions.assertEquals(moRegistration.getValueBonusCode(page),"Test code");
     }
+
+}
 

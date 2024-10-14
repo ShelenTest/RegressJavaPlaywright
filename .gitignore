@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### ConfidensData ###
+!**/src/main/resources/my.properties

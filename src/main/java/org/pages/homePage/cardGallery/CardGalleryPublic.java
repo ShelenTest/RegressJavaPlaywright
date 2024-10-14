@@ -9,10 +9,12 @@ public class CardGalleryPublic {
 
 
     public void scrollToRegisterCard(Page page){
+        page.waitForTimeout(2000);
         while (true) {
-            page.click(slideToRightSelector);
-            if (page.isVisible(registerCardSelector)) {
+            if (page.locator(registerCardSelector).isVisible()) {
                 break;
-            }}}
+            }
+            page.locator(slideToRightSelector).click();
+        }}
 
 }

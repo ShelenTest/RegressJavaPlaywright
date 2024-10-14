@@ -1,12 +1,16 @@
 package orgTest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.LoadState;
 import org.junit.jupiter.api.*;
 import org.pages.modals.MoLogin;
 import org.pages.Profile;
 import org.pages.homePage.navBar.NavBarPrivate;
 import org.pages.modals.MoRegistration;
 import org.utils.ConfigProperties;
+import org.utils.RequestInterception;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,13 +22,14 @@ public class LoginTest extends PlaywrightManagerTest{
     private NavBarPrivate navBarPrivate = new NavBarPrivate();
     private Profile profile = new Profile();
     private MoRegistration moRegistration = new MoRegistration();
+    private RequestInterception requestInterception = new RequestInterception();
 
     private Page page;
 
     @BeforeEach
     public void setUp() {
         page = getPage();
-        page.navigate(ConfigProperties.getProperty("urlBase") + "/login");
+        page.navigate(getUrlBase() + "/login");
     }
 
 
@@ -32,12 +37,25 @@ public class LoginTest extends PlaywrightManagerTest{
     @DisplayName("MO Login. Успешная авторизация с nickname")
     @Tag("base")
     public void PWC_T13() {
-        moLogin.fillLoginInput(page,ConfigProperties.getProperty("login"));
-        moLogin.fillPasswordInput(page,ConfigProperties.getProperty("password"));
+        moLogin.fillLoginInput(page, getLogin());
+        moLogin.fillPasswordInput(page, getPassword());
         moLogin.clickLoginButton(page);
         navBarPrivate.clickProfileButton(page);
 
-        Assertions.assertEquals(ConfigProperties.getProperty("login"), profile.getUserName(page));}
+        Assertions.assertEquals(getLogin(), profile.getUserName(page));
+    }
+
+    @Test
+    @DisplayName("MO Login. Обработка серверной ошибки 500")
+    @Tag("base")
+    public void PWC_TEST1() throws JsonProcessingException {    // под этот тест не разработан тест-кейс в зефире
+        requestInterception.mock500(page,"**/api/auth/v2/login");
+        moLogin.fillLoginInput(page, getLogin());
+        moLogin.fillPasswordInput(page, getPassword());
+        moLogin.clickLoginButton(page);
+
+        assertThat(page.locator("text=Internal server error")).isVisible();
+    }
 
     @Test
     @DisplayName("МО Login. Переход на МО регистрации по ссылке Register new account")
@@ -52,18 +70,18 @@ public class LoginTest extends PlaywrightManagerTest{
     @DisplayName("MO Login. Успешная авторизация с email")
     @Tag("base")
     public void PWC_T14() {
-        moLogin.fillLoginInput(page,ConfigProperties.getProperty("email"));
-        moLogin.fillPasswordInput(page,ConfigProperties.getProperty("password"));
+        moLogin.fillLoginInput(page,getEmail());
+        moLogin.fillPasswordInput(page,getPassword());
         moLogin.clickLoginButton(page);
         navBarPrivate.clickProfileButton(page);
 
-        Assertions.assertEquals(ConfigProperties.getProperty("email"), profile.getEmail(page));}
+        Assertions.assertEquals(getEmail(), profile.getEmail(page));}
 
     @Test
     @DisplayName("МО Login. Авторизация с неверными данными")
     @Tag("base")
     public void PWC_T37() {
-        moLogin.fillLoginInput(page,ConfigProperties.getProperty("login"));
+        moLogin.fillLoginInput(page,getLogin());
         moLogin.fillPasswordInput(page,"QAZ123");
         moLogin.clickLoginButton(page);
 

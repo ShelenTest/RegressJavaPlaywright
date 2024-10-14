@@ -30,3 +30,4 @@ private String linkRegisterNewAccountSelector = "Register new account"; //зам
         page.getByText(linkRegisterNewAccountSelector).click();
     }
 }
+

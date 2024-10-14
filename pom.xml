@@ -47,6 +47,11 @@
       <artifactId>junit-vintage-engine</artifactId>
       <version>5.11.0-M2</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.12.3</version>
+    </dependency>
 
   </dependencies>
 
@@ -67,6 +72,11 @@
       <artifactId>maven-surefire-plugin</artifactId>
       <version>3.2.2</version>
       <configuration>
+        <systemProperties>
+          <property>
+            <name>skinName</name>
+          </property>
+        </systemProperties>
         <properties>
           <configurationParameters>
             junit.platform.reporting.open.xml.enabled = true
