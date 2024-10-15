@@ -82,7 +82,7 @@ public class LoginTest extends PlaywrightManagerTest{
     @Tag("base")
     public void PWC_T37() {
         moLogin.fillLoginInput(page,getLogin());
-        moLogin.fillPasswordInput(page,"QAZ123");
+        moLogin.fillPasswordInput(page,"TEST");
         moLogin.clickLoginButton(page);
 
         assertThat(page.getByText("Email or password is wrong")).isVisible();} // переделать ассерт, когда будет id для области ошибки}
